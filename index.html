@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>三恋风格 · 精准定位</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- ===== 国内镜像源（bootcdn） ===== -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/4.4.0/chart.umd.min.js">
+    </script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
     <style>
         /* ===== 完整样式 ===== */
         * {
@@ -153,12 +158,6 @@
             margin-top: 14px;
             padding-top: 12px;
             border-top: 1px solid rgba(255, 255, 255, 0.02);
-            letter-spacing: 1px;
-        }
-        .credits {
-            font-size: 9px;
-            color: rgba(255, 255, 255, 0.03);
-            margin-top: 4px;
             letter-spacing: 1px;
         }
 
@@ -609,6 +608,17 @@
             color: rgba(255, 255, 255, 0.25);
         }
 
+        /* 尾页底部鸣谢 */
+        .footer-credits {
+            text-align: center;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.03);
+            margin-top: 14px;
+            letter-spacing: 1px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
         .screenshot-overlay {
             display: none;
             position: fixed;
@@ -664,18 +674,18 @@
     </div>
 
     <div class="container">
-        <!-- 顶部 -->
+        <!-- ===== 顶部 ===== -->
         <div class="top-bar">
             <div class="badge">✦ 三恋精准定位 <span>· 深度剖析</span></div>
-            <div class="key">BLXP0919</div>
-            <div class="maker">制作人：黄海</div>
+            <div class="key">BLXF0919</div>
+            <div class="maker">制作人：背离</div>
         </div>
         <div class="header">
             <h1>三恋风格深度测试</h1>
             <div class="sub">定位你的风格 · 找到适合你的方向</div>
         </div>
 
-        <!-- 首页 -->
+        <!-- ===== 首页 ===== -->
         <div id="homePage">
             <div class="home-title">选择你的三恋倾向</div>
             <div class="home-desc">不同选择导向不同题库与专属解读<br>请选择与你最契合的风格</div>
@@ -685,10 +695,9 @@
                 <button class="home-btn" onclick="startTest('nuelian')"><span class="icon">💔</span> 虐恋 <span class="sub">—— 虐心恋爱 · 共情剖析</span></button>
             </div>
             <div class="disclaimer">✦ 此内容仅供娱乐 · 不构成任何建议 ✦</div>
-            <div class="credits">特别鸣谢：帕斯蒂芬 · 背离 等隐私用户</div>
         </div>
 
-        <!-- 答题 -->
+        <!-- ===== 答题 ===== -->
         <div id="questionPage">
             <div class="progress-wrap">
                 <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
@@ -703,7 +712,7 @@
             </div>
         </div>
 
-        <!-- 结果 -->
+        <!-- ===== 结果 ===== -->
         <div id="resultPage">
             <div class="result-title">你的三恋风格测试结果</div>
             <div class="result-sub">— 精准定位 · 深度剖析 —</div>
@@ -771,6 +780,8 @@
             </div>
             <div class="share-feedback" id="shareFeedback"></div>
             <button class="btn-restart" onclick="goHome()">↺ 回到主页</button>
+            <!-- ===== 尾页底部鸣谢 ===== -->
+            <div class="footer-credits">特别鸣谢：帕斯蒂芬 · 背离 等隐私用户</div>
         </div>
     </div>
 
@@ -781,7 +792,6 @@
         var CHART_LOADED = false;
         var CANVAS_LOADED = false;
 
-        // 检测 Chart.js 是否加载成功
         function checkChartLoaded() {
             if (typeof Chart !== 'undefined') {
                 CHART_LOADED = true;
@@ -795,7 +805,6 @@
             }
         }
 
-        // 检测 html2canvas 是否加载成功
         function checkCanvasLoaded() {
             if (typeof html2canvas !== 'undefined') {
                 CANVAS_LOADED = true;
@@ -807,7 +816,6 @@
             }
         }
 
-        // 轮询检测
         var loadCheckInterval = setInterval(function() {
             var chartOk = checkChartLoaded();
             var canvasOk = checkCanvasLoaded();
@@ -817,7 +825,6 @@
             }
         }, 1000);
 
-        // 5秒后停止轮询
         setTimeout(function() {
             clearInterval(loadCheckInterval);
             if (!CHART_LOADED) {
@@ -1320,7 +1327,7 @@
         }
 
         // ============================================================
-        // 分享、复制、截图（简化版，保底可用）
+        // 分享、复制、截图
         // ============================================================
         function getResultText() {
             var name = document.getElementById('summaryName') ? document.getElementById('summaryName').textContent : '';
@@ -1433,10 +1440,8 @@
         // ============================================================
         window.addEventListener('load', function() {
             console.log('[✓] 页面加载完成');
-            // 检测依赖
             checkChartLoaded();
             checkCanvasLoaded();
-            // 显示首页
             homePage.style.display = 'block';
             homePage.classList.add('page-fade-in');
             setTimeout(function() { homePage.classList.remove('page-fade-in'); }, 500);
