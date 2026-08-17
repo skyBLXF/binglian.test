@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>病恋 · 暗黑网格</title>
-    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
     </script>
     <style>
-        /* 全局重置 & 字体 */
+        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -23,24 +22,19 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            /* 🔥 暗黑网格 + 毛玻璃背景 */
             background-color: #0b0b0f;
             background-image:
-                /* 网格线 1 */
                 linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                /* 网格线 2 (更细的辅助网格) */
                 linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
             background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
             background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
-            /* 毛玻璃核心：背景模糊 + 动态光晕 */
             backdrop-filter: blur(2px);
             -webkit-backdrop-filter: blur(2px);
             position: relative;
         }
 
-        /* 动态光晕 (让毛玻璃更有层次) */
         body::before {
             content: '';
             position: fixed;
@@ -67,7 +61,6 @@
             filter: blur(60px);
         }
 
-        /* 主卡片 — 毛玻璃效果 */
         .container {
             width: 100%;
             max-width: 480px;
@@ -83,7 +76,7 @@
             transition: all 0.2s ease;
         }
 
-        /* ------ 顶部：SKY背离 + 密钥 ------ */
+        /* ===== 顶部：SKY背离 + 密钥 ===== */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -123,7 +116,6 @@
             font-family: 'SF Mono', 'Fira Code', monospace;
         }
 
-        /* 标题 */
         .header {
             text-align: center;
             margin-bottom: 22px;
@@ -145,7 +137,6 @@
             text-transform: uppercase;
         }
 
-        /* 进度条 */
         .progress-wrap {
             display: flex;
             align-items: center;
@@ -175,7 +166,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* 页码 */
         .page-indicator {
             font-size: 12px;
             color: rgba(255, 255, 255, 0.15);
@@ -184,7 +174,6 @@
             letter-spacing: 1.5px;
         }
 
-        /* 题目区域 */
         .question-area {
             margin-bottom: 10px;
         }
@@ -198,7 +187,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* 选项列表 */
         .options {
             display: flex;
             flex-direction: column;
@@ -248,7 +236,6 @@
             box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
         }
 
-        /* 结果页 */
         .result-page {
             display: none;
             animation: fadeIn 0.6s ease;
@@ -349,7 +336,6 @@
             color: rgba(255, 255, 255, 0.4);
         }
 
-        /* 页面切换 */
         #questionPage {
             display: block;
         }
@@ -363,7 +349,6 @@
             display: none;
         }
 
-        /* 小屏适配 */
         @media (max-width: 420px) {
             .container {
                 padding: 20px 16px 28px;
@@ -398,13 +383,11 @@
             <div class="key-code">BLXF0919</div>
         </div>
 
-        <!-- 头部 -->
         <div class="header">
             <h1>病恋风格深度测试</h1>
             <div class="sub">DARK LOVE · GRID ANALYSIS</div>
         </div>
 
-        <!-- 进度 -->
         <div class="progress-wrap">
             <div class="progress-bar">
                 <div class="fill" id="progressFill"></div>
@@ -439,10 +422,10 @@
 
     <script>
         // ============================================================
-        //  1. 原始 50 题 (已打乱顺序)
+        //  1. 原始 50 题 (按维度分组)
         // ============================================================
-        const RAW_QUESTIONS = [
-            // 权力支配 (原始 1-10)
+        var RAW_QUESTIONS = [
+            // 权力支配 (1-10)
             { text: '当你和伴侣意见不一致时，你更倾向于？', dim: '权力支配', opts: ['讲道理，让对方接受你的观点', '直接命令对方按你说的做', '听对方的，避免争吵',
                     '平等讨论，相互理解'
                 ] },
@@ -462,7 +445,7 @@
             { text: '你希望谁掌握财政大权？', dim: '权力支配', opts: ['必须是我', '全部交给对方', '各管各的', '共同管理'] },
             { text: '你觉得关系中"谁先低头"意味着？', dim: '权力支配', opts: ['输了，很丢脸', '爱的证明，我愿意', '谁错谁低头', '不重要，有台阶就下'] },
 
-            // 情感痴迷 (原始 11-20)
+            // 情感痴迷 (11-20)
             { text: '独处时你想到伴侣的频率是？', dim: '情感痴迷', opts: ['每时每刻，无法专注', '每天好几次', '忙起来完全不想', '偶尔想起，很平静'] },
             { text: '看到伴侣对异性微笑，你会？', dim: '情感痴迷', opts: ['嫉妒到想毁灭对方', '心酸，立刻撒娇求关注', '毫无感觉', '礼貌性微笑回应'] },
             { text: '热恋期过后进入平淡期，你觉得？', dim: '情感痴迷', opts: ['恐惧，怀疑爱消失了', '焦虑，拼命制造浪漫', '踏实，这才是过日子',
@@ -484,7 +467,7 @@
                     '完全懒得试探'
                 ] },
 
-            // 分离焦虑 (原始 21-30)
+            // 分离焦虑 (21-30)
             { text: '想到伴侣可能离开你，你会？', dim: '分离焦虑', opts: ['宁愿同归于尽', '觉得人生无意义', '难过但能恢复', '无所谓，随时换人'] },
             { text: '吵架时你最常说哪句？', dim: '分离焦虑', opts: ['你给我滚出去', '都是我的错行了吧', '我们都冷静下', '我觉得我们不合适'] },
             { text: '你如何看待伴侣的前任？', dim: '分离焦虑', opts: ['必须彻底抹杀一切痕迹', '非常介意，追问细节', '可以坦然聊起', '完全不关心'] },
@@ -498,7 +481,7 @@
                     '没用过，但觉得有效'
                 ] },
 
-            // 忠诚排他 (原始 31-40)
+            // 忠诚排他 (31-40)
             { text: '你会偷看伴侣手机吗？', dim: '忠诚排他', opts: ['经常，必须掌握动态', '偶尔，趁他洗澡偷看', '不会，但会当面要他打开', '完全不看'] },
             { text: '发现伴侣给异性点赞，你会？', dim: '忠诚排他', opts: ['质问并让他取关', '阴阳怪气嘲讽', '直接拿他手机取消赞', '无所谓'] },
             { text: '伴侣可以有私房钱吗？', dim: '忠诚排他', opts: ['不行，财政归我管', '可以有小额，但需报备', '随便，他的自由', '别让我发现就行'] },
@@ -514,7 +497,7 @@
                 ] },
             { text: '恋爱中需要绝对诚实吗？', dim: '忠诚排他', opts: ['不必要，需要秘密', '必要，但我会保留小秘密', '绝对必要', '善意的谎言可以'] },
 
-            // 极端行为 (原始 41-50)
+            // 极端行为 (41-50)
             { text: '伴侣坚决要分手，你会？', dim: '极端行为', opts: ['用自残威胁逼他留下', '苦苦哀求，下跪挽留', '冷静接受', '立刻找新欢报复'] },
             { text: '你能接受带"疼痛"的亲密行为吗？', dim: '极端行为', opts: ['非常喜欢', '可以接受轻度', '不太能接受', '绝对拒绝'] },
             { text: '情绪失控时你会对伴侣动手吗？', dim: '极端行为', opts: ['会', '会摔东西但不动手', '不会，自己躲开', '用言语暴击'] },
@@ -531,63 +514,73 @@
         //  2. 打乱题目顺序 (Fisher-Yates)
         // ============================================================
         function shuffleArray(arr) {
-            const a = [...arr];
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
+            var a = arr.slice();
+            for (var i = a.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
             }
             return a;
         }
 
-        const questions = shuffleArray(RAW_QUESTIONS);
+        var questions = shuffleArray(RAW_QUESTIONS);
 
         // ============================================================
         //  3. 应用状态
         // ============================================================
-        const dims = ['权力支配', '情感痴迷', '分离焦虑', '忠诚排他', '极端行为'];
-        const total = questions.length;
-        const answers = new Array(total).fill(-1);
-        const scores = {};
-        dims.forEach(d => scores[d] = 0);
+        var dims = ['权力支配', '情感痴迷', '分离焦虑', '忠诚排他', '极端行为'];
+        var total = questions.length;
+        var answers = new Array(total);
+        var scores = {};
+        for (var d = 0; d < dims.length; d++) {
+            scores[dims[d]] = 0;
+        }
+        for (var a = 0; a < total; a++) {
+            answers[a] = -1;
+        }
 
-        let currentIndex = 0;
-        let chartInstance = null;
+        var currentIndex = 0;
+        var chartInstance = null;
 
         // DOM
-        const qText = document.getElementById('questionText');
-        const optContainer = document.getElementById('optionsContainer');
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
-        const pageIndicator = document.getElementById('pageIndicator');
-        const questionPage = document.getElementById('questionPage');
-        const resultPage = document.getElementById('resultPage');
+        var qText = document.getElementById('questionText');
+        var optContainer = document.getElementById('optionsContainer');
+        var progressFill = document.getElementById('progressFill');
+        var progressText = document.getElementById('progressText');
+        var pageIndicator = document.getElementById('pageIndicator');
+        var questionPage = document.getElementById('questionPage');
+        var resultPage = document.getElementById('resultPage');
 
         // ============================================================
         //  4. 渲染
         // ============================================================
         function renderQuestion(index) {
-            const q = questions[index];
+            var q = questions[index];
             qText.textContent = q.text;
-            const letters = ['A', 'B', 'C', 'D'];
+            var letters = ['A', 'B', 'C', 'D'];
             optContainer.innerHTML = '';
 
-            q.opts.forEach((opt, i) => {
-                const div = document.createElement('div');
+            for (var i = 0; i < q.opts.length; i++) {
+                var div = document.createElement('div');
                 div.className = 'option';
                 if (answers[index] === i) div.classList.add('selected');
-                div.innerHTML = `<span class="tag">${letters[i]}</span><span>${opt}</span>`;
-                div.addEventListener('click', () => selectOption(index, i));
+                div.innerHTML = '<span class="tag">' + letters[i] + '</span><span>' + q.opts[i] + '</span>';
+                div.addEventListener('click', (function(idx, optIdx) {
+                    return function() {
+                        selectOption(idx, optIdx);
+                    };
+                })(index, i));
                 optContainer.appendChild(div);
-            });
+            }
 
-            // 进度
-            const pct = Math.round((index / total) * 100);
+            var pct = Math.round((index / total) * 100);
             progressFill.style.width = pct + '%';
             progressText.textContent = pct + '%';
 
-            const pageNum = Math.floor(index / 5) + 1;
-            const totalPages = Math.ceil(total / 5);
-            pageIndicator.textContent = `第 ${pageNum} / ${totalPages} 页`;
+            var pageNum = Math.floor(index / 5) + 1;
+            var totalPages = Math.ceil(total / 5);
+            pageIndicator.textContent = '第 ' + pageNum + ' / ' + totalPages + ' 页';
         }
 
         // ============================================================
@@ -597,22 +590,24 @@
             if (answers[index] !== -1) return;
             answers[index] = optIdx;
 
-            // 更新UI
-            const opts = optContainer.children;
-            for (let i = 0; i < opts.length; i++) {
-                opts[i].classList.toggle('selected', i === optIdx);
+            var opts = optContainer.children;
+            for (var i = 0; i < opts.length; i++) {
+                if (i === optIdx) {
+                    opts[i].classList.add('selected');
+                } else {
+                    opts[i].classList.remove('selected');
+                }
             }
 
-            // 计分
-            const q = questions[index];
-            let score = 0;
+            var q = questions[index];
+            var score = 0;
             if (optIdx === 0) score = 3;
             else if (optIdx === 1) score = 2;
             else if (optIdx === 2) score = 0;
             else if (optIdx === 3) score = 1;
             scores[q.dim] = (scores[q.dim] || 0) + score;
 
-            setTimeout(() => {
+            setTimeout(function() {
                 if (currentIndex < total - 1) {
                     currentIndex++;
                     renderQuestion(currentIndex);
@@ -629,39 +624,41 @@
             questionPage.style.display = 'none';
             resultPage.classList.add('active');
 
-            const dimScores = dims.map(d => scores[d] || 0);
+            var dimScores = [];
+            for (var d = 0; d < dims.length; d++) {
+                dimScores.push(scores[dims[d]] || 0);
+            }
 
-            // 权力标签
-            const aCount = answers.filter((a, idx) => {
-                const q = questions[idx];
-                return q.dim === '权力支配' && a === 0;
-            }).length;
-            const bCount = answers.filter((a, idx) => {
-                const q = questions[idx];
-                return q.dim === '权力支配' && a === 1;
-            }).length;
-            let powerLabel = '⚖️ 平权';
+            var aCount = 0,
+                bCount = 0;
+            for (var i = 0; i < answers.length; i++) {
+                var q = questions[i];
+                if (q.dim === '权力支配') {
+                    if (answers[i] === 0) aCount++;
+                    else if (answers[i] === 1) bCount++;
+                }
+            }
+            var powerLabel = '⚖️ 平权';
             if (aCount > bCount) powerLabel = '🔺 上位';
             else if (aCount < bCount) powerLabel = '🔻 下位';
 
-            // 情感标签
-            const dCount = answers.filter((a, idx) => {
-                const q = questions[idx];
-                return q.dim === '情感痴迷' && a === 3;
-            }).length;
-            const abCount = answers.filter((a, idx) => {
-                const q = questions[idx];
-                return q.dim === '情感痴迷' && (a === 0 || a === 1);
-            }).length;
-            let emotionLabel = '🌿 日常';
+            var dCount = 0,
+                abCount = 0;
+            for (var j = 0; j < answers.length; j++) {
+                var q2 = questions[j];
+                if (q2.dim === '情感痴迷') {
+                    if (answers[j] === 3) dCount++;
+                    else if (answers[j] === 0 || answers[j] === 1) abCount++;
+                }
+            }
+            var emotionLabel = '🌿 日常';
             if (abCount >= 7) emotionLabel = '🔥 高压';
             else if (dCount >= 6) emotionLabel = '🎣 低恋·钓系';
 
             document.getElementById('tagPower').textContent = powerLabel;
             document.getElementById('tagEmotion').textContent = emotionLabel;
 
-            // 雷达图
-            const ctx = document.getElementById('radarChart').getContext('2d');
+            var ctx = document.getElementById('radarChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
             chartInstance = new Chart(ctx, {
                 type: 'radar',
@@ -700,9 +697,11 @@
                 }
             });
 
-            // 描述文案
-            const desc = document.getElementById('resultDesc');
-            const totalScore = dimScores.reduce((a, b) => a + b, 0);
+            var desc = document.getElementById('resultDesc');
+            var totalScore = 0;
+            for (var s = 0; s < dimScores.length; s++) {
+                totalScore += dimScores[s];
+            }
             if (totalScore > 80) desc.textContent = '你在关系中展现出强烈的支配与痴迷倾向，需警惕过度控制带来的负面影响。';
             else if (totalScore > 60) desc.textContent = '你具有一定的掌控欲和情感依赖，建议在亲密关系中保持适度边界。';
             else if (totalScore > 40) desc.textContent = '你在关系中较为理性，懂得尊重对方，但仍需关注情感深度的培养。';
@@ -714,10 +713,22 @@
         // ============================================================
         function resetTest() {
             currentIndex = 0;
-            answers.fill(-1);
-            dims.forEach(d => scores[d] = 0);
+            for (var i = 0; i < answers.length; i++) answers[i] = -1;
+            for (var d = 0; d < dims.length; d++) scores[dims[d]] = 0;
             if (chartInstance) { chartInstance.destroy();
                 chartInstance = null; }
             resultPage.classList.remove('active');
             questionPage.style.display = 'block';
             renderQuestion(0);
+        }
+
+        // ============================================================
+        //  8. 启动 (确保页面完全加载后执行)
+        // ============================================================
+        window.addEventListener('load', function() {
+            renderQuestion(0);
+        });
+    </script>
+
+</body>
+</html>
